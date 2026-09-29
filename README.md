@@ -1,5 +1,7 @@
 # STCP reproduction
 
+**在线使用 / Live demo: https://jxucoder.github.io/stcp/** (runs entirely in your browser)
+
 Reproduction of *STCP: Simplified-Traditional Chinese Conversion and Proofreading*
 (Xu, Ma, Tsai, Hovy, IJCNLP 2017 demos, [I17-3016](https://aclanthology.org/I17-3016.pdf)).
 
