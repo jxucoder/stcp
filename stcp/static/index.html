@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STCP 简繁对照</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --paper: #fffdf9; --ink: #1d1b18; --ink-2: #57524a; --muted: #8b857a;
+    --line: #e7e2d8; --line-2: #d8d1c3; --gutter: #f1ede5;
+    --amb: #fcebb6; --amb-ink: #6b4d00; --low: #f7c948; --word: #2b5fd9; --word-bg: #e5edfd;
+    --edit: #d6f0dc; --edit-ink: #16603a; --hover: #efe6d2; --accent: #b3261e; --shadow: 0 12px 40px rgba(40, 30, 10, .14);
+    --serif-sc: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --serif-tc: "Noto Serif TC", "Songti TC", "STSong", "PMingLiU", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121110; --paper: #1a1917; --ink: #eeeae2; --ink-2: #bdb6a9; --muted: #857f74;
+      --line: #2c2a26; --line-2: #3a3731; --gutter: #161513;
+      --amb: #4a3a0e; --amb-ink: #f5d98a; --low: #9a7208; --word: #86a9f7; --word-bg: #1f2a44;
+      --edit: #173623; --edit-ink: #93dfaf; --hover: #2f2a20; --accent: #ff8a80; --shadow: 0 12px 40px rgba(0, 0, 0, .5);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); display: flex; flex-direction: column; }
+  button { font: inherit; cursor: pointer; }
+
+  /* ---------- top bar ---------- */
+  .top { display: flex; align-items: center; gap: 18px; padding: 14px 28px; flex-wrap: wrap; }
+  .brand { margin: 0; display: flex; align-items: baseline; gap: 10px; font: 600 20px/1 var(--serif-tc); letter-spacing: .01em; }
+  .brand span { font-size: 15px; font-weight: 400; color: var(--muted); }
+  .stats { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+  .chip { display: flex; align-items: baseline; gap: 6px; padding: 5px 11px; border-radius: 999px; background: var(--paper);
+          border: 1px solid var(--line); font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+  .chip b { font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .chip i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; align-self: center; }
+  .actions { display: flex; gap: 8px; }
+  .btn { border: 1px solid var(--line-2); background: var(--paper); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 13px; }
+  .btn:hover { border-color: var(--muted); }
+  .btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn.ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
+  .btn.ghost:hover { background: var(--paper); border-color: var(--line); }
+
+  /* ---------- comparison ---------- */
+  .wrap { flex: 1; min-height: 0; padding: 0 28px 20px; display: flex; }
+  .board { flex: 1; min-height: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+           display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+  .heads { display: grid; grid-template-columns: 44px 1fr 1fr; border-bottom: 1px solid var(--line); background: var(--paper); }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 22px; }
+  .head + .head { border-left: 1px solid var(--line); }
+  .head .t { display: flex; align-items: baseline; gap: 8px; }
+  .head .t b { font-family: var(--serif-tc); font-size: 17px; }
+  .head .t span { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .scroll { flex: 1; overflow: auto; position: relative; }
+  .row { display: grid; grid-template-columns: 44px 1fr 1fr; }
+  .row:hover .ln { color: var(--ink-2); }
+  .ln { background: var(--gutter); color: var(--muted); font-size: 11px; text-align: right; padding: 16px 10px 0 0;
+        font-variant-numeric: tabular-nums; user-select: none; border-right: 1px solid var(--line); }
+  .cell { padding: 12px 22px; font-size: 18px; line-height: 2.05; white-space: pre-wrap; overflow-wrap: anywhere; border-bottom: 1px solid var(--line); }
+  .cell.sc { font-family: var(--serif-sc); color: var(--ink-2); }
+  .cell.tc { font-family: var(--serif-tc); border-left: 1px solid var(--line); }
+  .row.blank .cell { padding: 4px 22px; line-height: 1; }
+  .row:last-child .cell { border-bottom: 0; }
+
+  .s { border-radius: 4px; padding: 1px 0; transition: background .12s, box-shadow .12s; }
+  .s.chg { box-shadow: inset 0 -1px 0 var(--line-2); }
+  .s.amb { background: var(--amb); color: var(--amb-ink); cursor: pointer; }
+  .s.low { background: var(--low); color: #3a2800; }
+  .s.word { background: var(--word-bg); box-shadow: inset 0 -2px 0 var(--word); cursor: pointer; }
+  .s.edited { background: var(--edit); color: var(--edit-ink); box-shadow: inset 0 -2px 0 var(--edit-ink); }
+  .s.hl { background: var(--hover); box-shadow: 0 0 0 2px var(--hover); color: var(--ink); }
+  .s.cur { box-shadow: 0 0 0 2px var(--ink); }
+  .showall-off .s.chg { box-shadow: none; }
+  .sc .s.amb, .sc .s.word, .sc .s.low, .sc .s.edited { background: transparent; color: inherit; box-shadow: inset 0 -2px 0 var(--line-2); }
+  .sc .s.hl { background: var(--hover); }
+
+  textarea.editor { width: 100%; height: 100%; border: 0; outline: none; resize: none; padding: 16px 22px 16px 66px;
+                    font: 18px/2.05 var(--serif-sc); color: var(--ink); background: var(--paper); }
+  .empty { padding: 60px 20px; text-align: center; color: var(--muted); }
+
+  /* ---------- legend ---------- */
+  .foot { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; padding: 0 30px 16px; color: var(--muted); font-size: 12px; }
+  .foot .k { display: inline-flex; align-items: center; gap: 6px; }
+  .foot .sw { width: 22px; height: 14px; border-radius: 3px; display: inline-block; }
+  kbd { font: 11px var(--sans); border: 1px solid var(--line-2); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--ink-2); background: var(--paper); }
+  .foot label { margin-left: auto; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+  /* ---------- popover ---------- */
+  .pop { position: absolute; z-index: 10; width: 340px; background: var(--paper); border: 1px solid var(--line-2);
+         border-radius: 12px; box-shadow: var(--shadow); padding: 14px; font-family: var(--sans); animation: in .14s ease-out; }
+  @keyframes in { from { opacity: 0; transform: translateY(-4px); } }
+  .pop .ph { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .pop .ph .src { font-size: 12px; color: var(--muted); }
+  .pop .ph .src b { font-family: var(--serif-sc); font-size: 20px; color: var(--ink); margin: 0 4px; }
+  .pop .x { border: 0; background: none; color: var(--muted); font-size: 18px; line-height: 1; padding: 4px; }
+  .opt { display: grid; grid-template-columns: minmax(48px, max-content) 1fr; gap: 2px 12px; padding: 10px; border-radius: 9px; border: 1px solid var(--line);
+         margin-top: 8px; cursor: pointer; align-items: center; }
+  .opt:hover { border-color: var(--muted); }
+  .opt.on { border-color: var(--ink); background: var(--bg); }
+  .opt .g { font-family: var(--serif-tc); font-size: 26px; white-space: nowrap; grid-row: span 2; text-align: center; line-height: 1.1; }
+  .opt .meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--ink-2); }
+  .opt .meta kbd { margin-right: 6px; }
+  .opt .p { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+  .bar { height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--word); border-radius: 3px; }
+  .opt .info { grid-column: 2; font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.55; }
+  .opt .info .ex { font-family: var(--serif-tc); color: var(--ink-2); font-size: 13px; }
+  .tag { font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--line); color: var(--ink-2); margin-left: 6px; }
+  .pop input { width: 100%; margin-top: 10px; font: 15px var(--serif-tc); padding: 8px 10px; border: 1px solid var(--line-2);
+               border-radius: 8px; background: transparent; color: var(--ink); outline: none; }
+  .pop input:focus { border-color: var(--ink); }
+
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper);
+           padding: 8px 16px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+
+  @media (max-width: 760px) {
+    html, body { height: auto; }
+    body { display: block; }
+    .top, .wrap { padding-left: 12px; padding-right: 12px; }
+    .top { gap: 10px; }
+    .foot .k:nth-child(5), #next, #time { display: none; }
+    .stats { margin-left: 0; width: 100%; }
+    .chip { padding: 3px 9px; }
+    .actions { margin-left: auto; }
+    .heads, .row { grid-template-columns: 1fr 1fr; }
+    .heads > div:first-child, .ln { display: none; }
+    .head .t span { display: none; }
+    .cell, .head { padding-left: 12px; padding-right: 12px; }
+    .cell { font-size: 16px; line-height: 1.95; }
+    .cell.tc { border-left: 1px solid var(--line); }
+    .board { min-height: 60vh; }
+    .scroll { overflow: visible; min-height: 50vh; }
+    textarea.editor { padding-left: 12px; min-height: 60vh; }
+    .pop { position: fixed; left: 10px !important; right: 10px; top: auto !important; bottom: 10px; width: auto;
+           max-height: 62vh; overflow: auto; z-index: 50; }
+    .foot { padding: 12px 14px 20px; gap: 10px 14px; }
+    .foot label { margin-left: 0; }
+  }
+
+  .foot a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1 class="brand">STCP<span>简繁转换</span></h1>
+  <div class="stats" id="stats"></div>
+  <div class="actions">
+    <button class="btn ghost" id="next" title="下一处待确认 (n)">下一处 ↓</button>
+    <button class="btn" id="copy">复制繁體</button>
+    <button class="btn" id="dl">下载</button>
+    <button class="btn primary" id="save">保存标注</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="board">
+    <div class="heads">
+      <div></div>
+      <div class="head"><div class="t"><b>简体</b><span>Source</span></div>
+        <button class="btn ghost" id="edit">✎ 编辑原文</button></div>
+      <div class="head"><div class="t"><b>繁體</b><span>Output</span></div>
+        <span class="chip" id="time" style="border:0;background:none"></span></div>
+    </div>
+    <div class="scroll" id="scroll"><div class="empty">转换中…</div></div>
+  </div>
+</div>
+
+<div class="foot">
+  <span class="k"><span class="sw" style="background:var(--amb)"></span>歧义字</span>
+  <span class="k"><span class="sw" style="background:var(--low)"></span>低置信 &lt;90%</span>
+  <span class="k"><span class="sw" style="background:var(--word-bg);box-shadow:inset 0 -2px 0 var(--word)"></span>词表替换</span>
+  <span class="k"><span class="sw" style="background:var(--edit);box-shadow:inset 0 -2px 0 var(--edit-ink)"></span>已修改</span>
+  <span class="k"><kbd>n</kbd><kbd>p</kbd> 下/上一处 · <kbd>1</kbd>–<kbd>9</kbd> 选择 · <kbd>Esc</kbd> 关闭 · <kbd>⌘</kbd><kbd>⏎</kbd> 转换</span>
+  <label><input type="checkbox" id="showall" checked> 标出所有被转换的字</label>
+  <a href="https://aclanthology.org/I17-3016.pdf" target="_blank" rel="noopener">论文 I17-3016</a>
+  <a href="mailto:jiarui.c.xu@gmail.com">联系：jiarui.c.xu@gmail.com</a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SAMPLE = `我了解云端软件。
+他在后面干活，把头发剪短了，然后去面馆吃了一碗面。
+
+台风过后，他们在台上发表了关于经济发展的讲话，并向系统管理员借了一台笔记本电脑。
+这只表走得很准，时间一分一秒地过去了，我们都在等他回来。
+老师说：“这个问题的范围太大了，你们先把历史资料收集齐全，再系统地分析。”`;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let source = SAMPLE, segs = [], gloss = {}, auto = "", cur = -1, editing = false, ms = 0;
+
+const isAmb = (s) => s.cands.length > 1;
+const isLow = (s) => s.probs.length > 1 && Math.max(...s.probs) < 0.9;
+const needsLook = (s) => isAmb(s) && (isLow(s) || s.kind === "word");
+
+async function convert() {
+  const r = await fetch("/api/convert", { method: "POST", headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ text: source }) }).then((r) => r.json());
+  segs = r.segments.map((s) => ({ ...s, auto: s.out, edited: false }));
+  gloss = r.glossary; ms = r.ms; auto = text(); cur = -1;
+  render();
+}
+const text = () => segs.map((s) => s.out).join("");
+
+function spanOf(s, i, side) {
+  const str = side === "sc" ? s.src : s.out;
+  if (s.src === "\n") return "";
+  const cls = ["s"];
+  if (s.edited) cls.push("edited");
+  else if (isAmb(s)) cls.push(s.kind === "word" ? "word" : "amb", isLow(s) ? "low" : "");
+  else if (s.src !== s.out) cls.push("chg");
+  else return esc(str);
+  if (i === cur) cls.push("cur");
+  return `<span class="${cls.join(" ")}" data-i="${i}">${esc(str)}</span>`;
+}
+
+function render() {
+  if (editing) return;
+  const rows = [[]];
+  segs.forEach((s, i) => (s.src === "\n" ? rows.push([]) : rows[rows.length - 1].push(i)));
+  $("scroll").innerHTML = rows.map((idx, n) => {
+    const sc = idx.map((i) => spanOf(segs[i], i, "sc")).join("");
+    const tc = idx.map((i) => spanOf(segs[i], i, "tc")).join("");
+    return `<div class="row ${idx.length ? "" : "blank"}"><div class="ln">${n + 1}</div>
+      <div class="cell sc">${sc || " "}</div><div class="cell tc">${tc || " "}</div></div>`;
+  }).join("");
+  stats();
+}
+
+function stats() {
+  const han = [...source].filter((c) => /\p{Script=Han}/u.test(c)).length;
+  const changed = segs.filter((s) => s.src !== s.out).reduce((a, s) => a + [...s.out].filter((c, k) => c !== [...s.src][k]).length, 0);
+  const amb = segs.filter(isAmb).length, low = segs.filter((s) => isAmb(s) && isLow(s) && !s.edited).length;
+  const ed = segs.filter((s) => s.edited).length;
+  $("stats").innerHTML = [["字", han], ["转换", changed], ["歧义", amb, "var(--amb)"], ["待确认", low, "var(--low)"], ["已修改", ed, "var(--edit-ink)"]]
+    .map(([k, v, c]) => `<span class="chip">${c ? `<i style="background:${c}"></i>` : ""}${k}<b>${v}</b></span>`).join("");
+  $("time").textContent = `${ms} ms`;
+}
+
+/* ---------- popover ---------- */
+function openPop(i) {
+  closePop(false);
+  cur = i; render();
+  const s = segs[i], el = document.querySelector(`.tc .s[data-i="${i}"]`);
+  if (!el) return;
+  const opts = s.cands.includes(s.out) ? s.cands : [...s.cands, s.out];
+  const html = opts.map((c, k) => {
+    const p = s.probs[k];
+    const g = [...c].length === 1 ? gloss[c] : null;
+    const info = g ? `${esc(g.pinyin)}${g.gloss ? " · " + esc(g.gloss) : ""}<br><span class="ex">${g.examples.slice(0, 5).map(esc).join("　")}</span>`
+                   : (s.kind === "word" && k < s.cands.length - 1 ? "词表译法" : s.kind === "word" ? "逐字转换" : "");
+    return `<div class="opt ${c === s.out ? "on" : ""}" data-c="${esc(c)}">
+      <div class="g">${esc(c)}</div>
+      <div><div class="meta"><span><kbd>${k + 1}</kbd>${c === s.auto ? '<span class="tag">模型选择</span>' : ""}</span>
+        <span class="p">${p != null ? (100 * p).toFixed(1) + "%" : ""}</span></div>
+        <div class="bar"><i style="width:${p != null ? (100 * p).toFixed(1) : 0}%"></i></div></div>
+      <div class="info">${info}</div></div>`;
+  }).join("");
+  const pop = document.createElement("div");
+  pop.className = "pop"; pop.id = "pop";
+  pop.innerHTML = `<div class="ph"><span class="src">原文<b>${esc(s.src)}</b>${s.kind === "word" ? "词" : "字"}</span><button class="x" title="Esc">×</button></div>
+    ${html}<input placeholder="其他写法，回车确认">`;
+  const box = $("scroll"), r = el.getBoundingClientRect(), b = box.getBoundingClientRect();
+  box.appendChild(pop);
+  const w = pop.offsetWidth;
+  let left = r.left - b.left + box.scrollLeft - 20;
+  left = Math.max(8, Math.min(left, box.clientWidth - w - 8));
+  let top = r.bottom - b.top + box.scrollTop + 8;
+  if (r.bottom + pop.offsetHeight + 16 > b.bottom && r.top - b.top > pop.offsetHeight + 16) top = r.top - b.top + box.scrollTop - pop.offsetHeight - 8;
+  pop.style.left = left + "px"; pop.style.top = top + "px";
+  pop.querySelectorAll(".opt").forEach((o) => (o.onclick = () => choose(o.dataset.c)));
+  pop.querySelector(".x").onclick = () => closePop();
+  pop.querySelector("input").onkeydown = (e) => { if (e.key === "Enter" && e.target.value) choose(e.target.value); if (e.key === "Escape") closePop(); };
+}
+function closePop(rerender = true) { $("pop")?.remove(); if (rerender && cur >= 0) { cur = -1; render(); } }
+function choose(c) {
+  const s = segs[cur], i = cur;
+  s.out = c; s.edited = c !== s.auto;
+  render(); openPop(i);
+}
+function jump(dir) {
+  const idx = segs.map((_, i) => i).filter((i) => needsLook(segs[i]) && !segs[i].edited);
+  const all = idx.length ? idx : segs.map((_, i) => i).filter((i) => isAmb(segs[i]));
+  if (!all.length) return;
+  const n = dir > 0 ? all.find((i) => i > cur) ?? all[0] : [...all].reverse().find((i) => i < cur) ?? all[all.length - 1];
+  document.querySelector(`.tc .s[data-i="${n}"]`)?.scrollIntoView({ block: "center" });
+  openPop(n);
+}
+
+/* ---------- interactions ---------- */
+$("scroll").addEventListener("click", (e) => {
+  if (e.target.closest(".pop")) return;
+  const el = e.target.closest(".s");
+  if (el && isAmb(segs[+el.dataset.i])) openPop(+el.dataset.i); else closePop();
+});
+$("scroll").addEventListener("mouseover", (e) => {
+  const el = e.target.closest(".s");
+  document.querySelectorAll(".s.hl").forEach((x) => x.classList.remove("hl"));
+  if (el) document.querySelectorAll(`.s[data-i="${el.dataset.i}"]`).forEach((x) => x.classList.add("hl"));
+});
+$("scroll").addEventListener("mouseleave", () => document.querySelectorAll(".s.hl").forEach((x) => x.classList.remove("hl")));
+
+$("edit").onclick = () => {
+  if (!editing) {
+    editing = true; closePop(false);
+    $("edit").textContent = "⇄ 转换对照"; $("edit").classList.add("primary"); $("edit").classList.remove("ghost");
+    $("scroll").innerHTML = `<textarea class="editor" id="ed" spellcheck="false"></textarea>`;
+    $("ed").value = source; $("ed").focus();
+    $("ed").onkeydown = (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) $("edit").click(); };
+  } else {
+    source = $("ed").value; editing = false;
+    $("edit").textContent = "✎ 编辑原文"; $("edit").classList.remove("primary"); $("edit").classList.add("ghost");
+    $("scroll").innerHTML = '<div class="empty">转换中…</div>';
+    convert();
+  }
+};
+$("showall").onchange = (e) => document.body.classList.toggle("showall-off", !e.target.checked);
+$("next").onclick = () => jump(1);
+const toast = (m) => { $("toast").textContent = m; $("toast").classList.add("on"); setTimeout(() => $("toast").classList.remove("on"), 1600); };
+$("copy").onclick = async () => { await navigator.clipboard.writeText(text()); toast("已复制繁體文本"); };
+$("dl").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text()], { type: "text/plain;charset=utf-8" }));
+  a.download = "stcp-traditional.txt"; a.click();
+};
+$("save").onclick = async () => {
+  const edits = segs.map((s, i) => ({ i, src: s.src, automatic: s.auto, corrected: s.out })).filter((e) => e.automatic !== e.corrected);
+  const r = await fetch("/api/annotations", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ source, automatic: auto, corrected: text(), edits }) }).then((r) => r.json());
+  toast(`已保存标注 · ${r.edits} 处修改`);
+};
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") return;
+  if (e.key === "Escape") closePop();
+  if (e.key === "n") jump(1);
+  if (e.key === "p") jump(-1);
+  const s = segs[cur];
+  if (s && /^[1-9]$/.test(e.key)) {
+    const opts = s.cands.includes(s.out) ? s.cands : [...s.cands, s.out];
+    if (opts[+e.key - 1]) choose(opts[+e.key - 1]);
+  }
+});
+convert();
+</script>
+</body>
+</html>

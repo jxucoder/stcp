@@ -1,0 +1,13 @@
+{
+ "order": 3,
+ "counts": [
+  17393,
+  1288337,
+  2202406
+ ],
+ "raw_mb": 18.156131,
+ "gz_mb": 11.394906,
+ "varying_chars": 1465,
+ "tables_mb": 2.371196,
+ "source": "o3p5.arpa"
+}
