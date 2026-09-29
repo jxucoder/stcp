@@ -98,6 +98,10 @@ uv run python -m stcp.server --lm models/char5.bin      # http://127.0.0.1:8002
 - `site/data/tables.json.gz`: includes the [jieba](https://github.com/fxsjy/jieba) dictionary (MIT).
 - `site/data/lm.bin.gz`: trained on Chinese Wikipedia text (CC BY-SA 4.0).
 
+## License
+
+Code: [MIT](LICENSE). Bundled data keeps the licenses listed above.
+
 ## Contact
 
 Jiarui Xu · [jiarui.c.xu@gmail.com](mailto:jiarui.c.xu@gmail.com)
