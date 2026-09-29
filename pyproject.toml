@@ -1,0 +1,21 @@
+[project]
+name = "stcp"
+version = "0.1.0"
+description = "STCP: Simplified-Traditional Chinese conversion with an n-gram LM and a proofreading interface (IJCNLP 2017 demo reproduction)"
+authors = [
+    { name = "Jiarui Xu", email = "jiarui.c.xu@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.141.1",
+    "huggingface-hub>=2.0.0",
+    "jieba>=0.42.1",
+    "kenlm",
+    "numpy>=2.4.6",
+    "opencc>=1.4.2",
+    "pyarrow>=25.0.1",
+    "uvicorn>=0.54.0",
+]
+
+[tool.uv.sources]
+kenlm = { url = "https://github.com/kpu/kenlm/archive/master.zip" }

@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+*.egg-info
+.venv
+
+# Large or regenerable artifacts (see README → Reproduce)
+third_party/
+models/
+data/raw/
+data/corpus/
+results/reference.jsonl
+
+# Local
+annotations/
+.claude/
+.DS_Store
