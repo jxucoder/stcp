@@ -5,6 +5,49 @@
 Reproduction of *STCP: Simplified-Traditional Chinese Conversion and Proofreading*
 (Xu, Ma, Tsai, Hovy, IJCNLP 2017 demos, [I17-3016](https://aclanthology.org/I17-3016.pdf)).
 
+## 中文简介
+
+STCP 是一个简体转繁体的工具，附带人工校对界面。它复现了 2017 年 IJCNLP 的系统演示论文
+[STCP: Simplified-Traditional Chinese Conversion and Proofreading](https://aclanthology.org/I17-3016.pdf)。
+
+简转繁最难的是「一简对多繁」：同一个简体字，在不同上下文里要转成不同的繁体字，
+比如「发」可以是「發」（发展）或「髮」（头发），「了」可以是「了」或「瞭」（了解）。
+STCP 的做法是：
+
+1. 用 jieba 分词，在词表里查找整词转换，比如台湾用语「软件 → 軟體」「笔记本电脑 → 筆記型電腦」；
+2. 其余的字列出所有繁体候选；
+3. 用字级 n-gram 语言模型给所有组合打分，取概率最高的一句。
+
+自动转换不可能百分之百正确，所以界面会把有歧义的字和词标出来。点一下就能看到每个候选的概率、拼音、释义和常见搭配，
+选错了可以直接改，改完的结果可以导出成 JSONL 标注数据。
+
+**在线使用：** https://jxucoder.github.io/stcp/ 。模型在浏览器本地运行，文字不会上传到任何服务器，首次打开需要下载约 13 MB。
+
+### 和论文的对比
+
+| | 论文 OpenCC | 论文 STCP | 本复现 OpenCC | 本复现 STCP |
+|---|---|---|---|---|
+| 总体准确率 | 98.90 | 99.64 | 93.50 | 97.61 |
+| 宏平均准确率 | 91.75 | 95.73 | 92.66 | 96.72 |
+
+论文的核心结论复现成功：STCP 在两项指标上都明显好于规则系统 OpenCC，宏平均的提升幅度（+3.98 对 +4.06）也几乎一样。
+总体准确率两边都比论文低，主要因为论文用的台湾中央社新闻语料需要 LDC 授权，这里改用了维基百科繁体文章，
+而维基百科的写法不统一（比如「台」和「臺」混用），参考答案本身就有噪声。详见下文 *Deviations from the paper*。
+
+### 本地运行
+
+网站版（静态文件，无需后端）：
+
+```bash
+python3 -m http.server 8010 -d site
+```
+
+服务器版（5-gram 模型，准确率更高，需要先按下文 *Reproduce* 训练模型）：
+
+```bash
+uv run python -m stcp.server --lm models/char5.bin
+```
+
 ## What is implemented
 
 | Paper | Here |
